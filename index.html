@@ -1,3 +1,33 @@
+Here is the updated code containing all the requested changes.
+
+### Key Updates Applied:
+
+1. **No Shortened Words ("Tgl" → "Tanggal")**:
+* Updated all labels, headers, and CSS tooltips from `Tgl` to `Tanggal`.
+
+
+2. **Removed ALL CAPS Words**:
+* Changed `EXPIRED` to `Expire` (e.g., `Expire (>7 Hari)`, `(Expire)`).
+
+
+3. **Added "Tipe Pengajuan" Column**:
+* Added `<th>Tipe Pengajuan</th>` right between **Agen / Pemilik** (or **Pemohon / No.HP**) and **Kode Billing**.
+* Updated mobile CSS breakpoints (`td:nth-child(...)`) to account for the new 7th column.
+* Updated JavaScript parsing logic:
+* Fetched Column K (`row[10]`) from the CSV source for `Tipe Pengajuan`.
+* Dynamically rendered the column in the HTML table rows.
+* Adjusted `colspan` empty/error state values from `6` to `7`.
+* Included `tipe` in data attributes (`data-tipe`) and global filter functionality.
+
+
+
+
+
+---
+
+### Updated Code (`index.html`)
+
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -299,14 +329,16 @@
             .spb-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Berangkat"; }
             .spb-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
             .spb-table tr.clickable-row td:nth-child(4)::before { content: "Agen / Pemilik"; }
-            .spb-table tr.clickable-row td:nth-child(5)::before { content: "Kode Billing"; }
-            .spb-table tr.clickable-row td:nth-child(6)::before { content: "Tenggang Waktu"; }
+            .spb-table tr.clickable-row td:nth-child(5)::before { content: "Tipe Pengajuan"; }
+            .spb-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
+            .spb-table tr.clickable-row td:nth-child(7)::before { content: "Tenggang Waktu"; }
             .bunker-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
             .bunker-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Kegiatan"; }
             .bunker-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
             .bunker-table tr.clickable-row td:nth-child(4)::before { content: "Pemohon / No.HP"; }
-            .bunker-table tr.clickable-row td:nth-child(5)::before { content: "Kode Billing"; }
-            .bunker-table tr.clickable-row td:nth-child(6)::before { content: "Tenggang Waktu"; }
+            .bunker-table tr.clickable-row td:nth-child(5)::before { content: "Tipe Pengajuan"; }
+            .bunker-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
+            .bunker-table tr.clickable-row td:nth-child(7)::before { content: "Tenggang Waktu"; }
             tr:not(.clickable-row) td { padding: 18px 10px; font-size: .78rem; }
             code { white-space: normal; overflow-wrap: anywhere; }
         }
@@ -338,7 +370,7 @@
     <div class="legend-item"><div class="color-box" style="background-color: #ffffff;"></div><span>Aman (0-2 Hari)</span></div>
     <div class="legend-item"><div class="color-box" style="background-color: #fff3cd;"></div><span>Peringatan (3-5 Hari)</span></div>
     <div class="legend-item"><div class="color-box" style="background-color: #f8d7da;"></div><span>Jatuh Tempo (6-7 Hari)</span></div>
-    <div class="legend-item"><div class="color-box" style="background-color: #e2e3e5;"></div><span>EXPIRED (&gt;7 Hari)</span></div>
+    <div class="legend-item"><div class="color-box" style="background-color: #e2e3e5;"></div><span>Expire (&gt;7 Hari)</span></div>
 </div>
 
 <div class="filter-panel">
@@ -350,6 +382,7 @@
             <option value="date">Tanggal</option>
             <option value="vessel">Nama Kapal</option>
             <option value="agent">Agen / Pemilik / Pemohon</option>
+            <option value="tipe">Tipe Pengajuan</option>
             <option value="billing">Kode Billing</option>
             <option value="aging">Tenggang Waktu</option>
         </select>
@@ -375,15 +408,16 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Tgl Berangkat</th>
+                        <th>Tanggal Berangkat</th>
                         <th>Nama Kapal</th>
                         <th>Agen / Pemilik</th>
+                        <th>Tipe Pengajuan</th>
                         <th>Kode Billing</th>
                         <th>Tenggang Waktu</th>
                     </tr>
                 </thead>
                 <tbody id="spbTbody">
-                    <tr><td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
+                    <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -397,15 +431,16 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Tgl Kegiatan</th>
+                        <th>Tanggal Kegiatan</th>
                         <th>Nama Kapal</th>
                         <th>Pemohon / No.HP</th>
+                        <th>Tipe Pengajuan</th>
                         <th>Kode Billing</th>
                         <th>Tenggang Waktu</th>
                     </tr>
                 </thead>
                 <tbody id="bunkerTbody">
-                    <tr><td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
+                    <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -464,7 +499,7 @@ function getAgingStyle(dateString) {
 
     let text = daysOld + " Hari";
     if (daysOld > 7) {
-        return { class: 'expire-expired', text: text + " (EXPIRED)" };
+        return { class: 'expire-expired', text: text + " (Expire)" };
     } else if (daysOld >= 6) {
         return { class: 'expire-critical', text: text + " (Jatuh Tempo)" };
     } else if (daysOld >= 3) {
@@ -492,18 +527,20 @@ async function loadTableData(url, tbodyId, type) {
         let count = 1;
 
         rows.forEach(row => {
-            let vesselName, dateVal, agentName, billingCode;
+            let vesselName, dateVal, agentName, billingCode, submissionType;
 
             if (type === 'spb') {
-                vesselName  = row[1] || '';
-                dateVal     = row[5] || '';
-                agentName   = row[8] || '';
-                billingCode = row[9] || '';
+                vesselName     = row[1] || '';
+                dateVal        = row[5] || '';
+                agentName      = row[8] || '';
+                billingCode    = row[9] || '';
+                submissionType = row[10] || ''; // Column K
             } else {
-                vesselName  = row[1] || '';
-                agentName   = row[7] || '';
-                dateVal     = row[8] || '';
-                billingCode = row[9] || '';
+                vesselName     = row[1] || '';
+                agentName      = row[7] || '';
+                dateVal        = row[8] || '';
+                billingCode    = row[9] || '';
+                submissionType = row[10] || ''; // Column K
             }
 
             if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
@@ -516,25 +553,27 @@ async function loadTableData(url, tbodyId, type) {
                 data-date="${escapeHtml(dateVal)}"
                 data-vessel="${escapeHtml(vesselName)}"
                 data-agent="${escapeHtml(agentName)}"
+                data-tipe="${escapeHtml(submissionType)}"
                 data-aging="${escapeHtml(aging.text)}">
                 <td>${count++}</td>
                 <td>${escapeHtml(dateVal)}</td>
                 <td><strong>${escapeHtml(vesselName)}</strong></td>
                 <td>${escapeHtml(agentName)}</td>
+                <td>${escapeHtml(submissionType)}</td>
                 <td><code>${escapeHtml(billingCode)}</code></td>
                 <td>${aging.text}</td>
             </tr>`;
         });
 
         if (count === 1) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
         } else {
             tbody.innerHTML = html;
             attachRowClickEvents();
         }
     } catch (err) {
         console.error("Failed to load data:", err);
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
     }
 }
 
@@ -570,7 +609,7 @@ function parseDateVal(value) {
 
 function getSearchValue(row, field) {
     if (field === "all") {
-        return [row.dataset.date, row.dataset.vessel, row.dataset.agent, row.dataset.billing, row.dataset.aging].join(" ");
+        return [row.dataset.date, row.dataset.vessel, row.dataset.agent, row.dataset.tipe, row.dataset.billing, row.dataset.aging].join(" ");
     }
     return row.dataset[field] || "";
 }
@@ -624,3 +663,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </body>
 </html>
+
+```
