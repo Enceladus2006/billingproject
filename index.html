@@ -502,20 +502,12 @@ async function loadTableData(url, tbodyId, type) {
                 dateVal        = row[5] || '';
                 agentName      = row[8] || '';
                 billingCode    = row[9] || '';
-                submissionType = row[10] || ''; // Column K
-            } else {
-                vesselName     = row[1] || '';
-                agentName      = row[6] || '';
-                dateVal        = row[7] || '';
-                billingCode    = row[8] || '';
-                submissionType = '';
-            }
+                submissionType = row[10] || '';
 
-            if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
+                if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
 
-            const aging = getAgingStyle(dateVal);
+                const aging = getAgingStyle(dateVal);
 
-            if (type === 'spb') {
                 html += `
                 <tr class="clickable-row ${aging.class}"
                     data-billing="${escapeHtml(billingCode)}"
@@ -533,6 +525,15 @@ async function loadTableData(url, tbodyId, type) {
                     <td>${aging.text}</td>
                 </tr>`;
             } else {
+                vesselName  = row[1] || '';
+                agentName   = row[7] || '';
+                dateVal     = row[8] || '';
+                billingCode = row[9] || '';
+
+                if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
+
+                const aging = getAgingStyle(dateVal);
+
                 html += `
                 <tr class="clickable-row ${aging.class}"
                     data-billing="${escapeHtml(billingCode)}"
@@ -551,17 +552,17 @@ async function loadTableData(url, tbodyId, type) {
             }
         });
 
+        const totalCols = type === 'spb' ? 7 : 6;
         if (count === 1) {
-            const colSpan = type === 'spb' ? 7 : 6;
-            tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="${totalCols}" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
         } else {
             tbody.innerHTML = html;
             attachRowClickEvents();
         }
     } catch (err) {
         console.error("Failed to load data:", err);
-        const colSpan = type === 'spb' ? 7 : 6;
-        tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
+        const totalCols = type === 'spb' ? 7 : 6;
+        tbody.innerHTML = `<tr><td colspan="${totalCols}" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
     }
 }
 
