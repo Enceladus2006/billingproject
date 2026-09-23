@@ -408,7 +408,7 @@
                     </tr>
                 </thead>
                 <tbody id="bunkerTbody">
-                    <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
+                    <tr><td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -505,43 +505,63 @@ async function loadTableData(url, tbodyId, type) {
                 submissionType = row[10] || ''; // Column K
             } else {
                 vesselName     = row[1] || '';
-                agentName      = row[7] || '';
-                dateVal        = row[8] || '';
-                billingCode    = row[9] || '';
-                submissionType = row[10] || ''; // Column K
+                agentName      = row[6] || '';
+                dateVal        = row[7] || '';
+                billingCode    = row[8] || '';
+                submissionType = '';
             }
 
             if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
 
             const aging = getAgingStyle(dateVal);
 
-            html += `
-            <tr class="clickable-row ${aging.class}"
-                data-billing="${escapeHtml(billingCode)}"
-                data-date="${escapeHtml(dateVal)}"
-                data-vessel="${escapeHtml(vesselName)}"
-                data-agent="${escapeHtml(agentName)}"
-                data-tipe="${escapeHtml(submissionType)}"
-                data-aging="${escapeHtml(aging.text)}">
-                <td>${count++}</td>
-                <td>${escapeHtml(dateVal)}</td>
-                <td><strong>${escapeHtml(vesselName)}</strong></td>
-                <td>${escapeHtml(agentName)}</td>
-                <td>${escapeHtml(submissionType)}</td>
-                <td><code>${escapeHtml(billingCode)}</code></td>
-                <td>${aging.text}</td>
-            </tr>`;
+            if (type === 'spb') {
+                html += `
+                <tr class="clickable-row ${aging.class}"
+                    data-billing="${escapeHtml(billingCode)}"
+                    data-date="${escapeHtml(dateVal)}"
+                    data-vessel="${escapeHtml(vesselName)}"
+                    data-agent="${escapeHtml(agentName)}"
+                    data-tipe="${escapeHtml(submissionType)}"
+                    data-aging="${escapeHtml(aging.text)}">
+                    <td>${count++}</td>
+                    <td>${escapeHtml(dateVal)}</td>
+                    <td><strong>${escapeHtml(vesselName)}</strong></td>
+                    <td>${escapeHtml(agentName)}</td>
+                    <td>${escapeHtml(submissionType)}</td>
+                    <td><code>${escapeHtml(billingCode)}</code></td>
+                    <td>${aging.text}</td>
+                </tr>`;
+            } else {
+                html += `
+                <tr class="clickable-row ${aging.class}"
+                    data-billing="${escapeHtml(billingCode)}"
+                    data-date="${escapeHtml(dateVal)}"
+                    data-vessel="${escapeHtml(vesselName)}"
+                    data-agent="${escapeHtml(agentName)}"
+                    data-tipe=""
+                    data-aging="${escapeHtml(aging.text)}">
+                    <td>${count++}</td>
+                    <td>${escapeHtml(dateVal)}</td>
+                    <td><strong>${escapeHtml(vesselName)}</strong></td>
+                    <td>${escapeHtml(agentName)}</td>
+                    <td><code>${escapeHtml(billingCode)}</code></td>
+                    <td>${aging.text}</td>
+                </tr>`;
+            }
         });
 
         if (count === 1) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
+            const colSpan = type === 'spb' ? 7 : 6;
+            tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
         } else {
             tbody.innerHTML = html;
             attachRowClickEvents();
         }
     } catch (err) {
         console.error("Failed to load data:", err);
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
+        const colSpan = type === 'spb' ? 7 : 6;
+        tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
     }
 }
 
